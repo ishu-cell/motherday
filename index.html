@@ -1,0 +1,990 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Happy Mother's Day</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.9.1/gsap.min.js"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400;600;700&family=Dancing+Script:wght@700&family=Montserrat:wght@300;400;600&display=swap');
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Montserrat', sans-serif;
+            color: white;
+            overflow-x: hidden;
+            background-color: #000;
+            min-height: 100vh;
+            width: 100%;
+            position: relative;
+        }
+        
+        #canvas-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 1;
+            opacity: 0.8;
+        }
+        
+        .container {
+            position: relative;
+            z-index: 2;
+            min-height: 100vh;
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 2rem;
+            background: radial-gradient(circle at center, rgba(0,0,0,0.2) 0%, rgba(0,0,0,0.7) 100%);
+        }
+        
+        .main-content {
+            position: relative;
+            width: 90%;
+            max-width: 1200px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            padding: 2rem;
+        }
+        
+        .main-header {
+            margin-bottom: 3rem;
+            animation: fadeIn 2s ease;
+            position: relative;
+            z-index: 2;
+            width: 100%;
+        }
+        
+        .date {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 1.2rem;
+            letter-spacing: 3px;
+            margin-bottom: 1rem;
+            color: rgba(255,255,255,0.8);
+        }
+        
+        h1 {
+            font-family: 'Dancing Script', cursive;
+            font-size: 5rem;
+            margin-bottom: 1rem;
+            text-shadow: 2px 2px 8px rgba(0,0,0,0.6);
+            background: linear-gradient(to right, #fff, #f5f5f5);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            position: relative;
+        }
+
+        h1::after {
+            content: "";
+            position: absolute;
+            bottom: -10px;
+            left: 25%;
+            width: 50%;
+            height: 2px;
+            background: linear-gradient(to right, transparent, rgba(255,255,255,0.8), transparent);
+        }
+        
+        h2 {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 2rem;
+            font-weight: 400;
+            margin-bottom: 2rem;
+            color: rgba(255,255,255,0.9);
+        }
+        
+        .message-section {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 3rem;
+            width: 100%;
+            max-width: 1200px;
+            margin: 0 auto;
+            text-align: left;
+            background: rgba(255,255,255,0.05);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 3rem;
+            box-shadow: 0 15px 30px rgba(0,0,0,0.3);
+            border: 1px solid rgba(255,255,255,0.1);
+            animation: fadeIn 2s ease;
+            opacity: 1;
+            animation-fill-mode: forwards;
+        }
+        
+        .left-col, .right-col {
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-start;
+        }
+        
+        .right-col {
+            border-left: 1px solid rgba(255,255,255,0.2);
+            padding-left: 2rem;
+        }
+        
+        .section-title {
+            font-family: 'Dancing Script', cursive;
+            font-size: 3rem;
+            margin-bottom: 1.5rem;
+            color: white;
+            text-shadow: 0 2px 5px rgba(0,0,0,0.3);
+        }
+        
+        .message p {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 1.3rem;
+            line-height: 1.8;
+            margin-bottom: 1.5rem;
+            color: rgba(255,255,255,0.95);
+            text-shadow: 0 1px 2px rgba(0,0,0,0.3);
+        }
+        
+        .achievements {
+            display: flex;
+            flex-direction: column;
+            gap: 2rem;
+            margin-bottom: 2rem;
+        }
+        
+        .achievement {
+            background: rgba(255,255,255,0.1);
+            border-radius: 15px;
+            padding: 1.8rem;
+            backdrop-filter: blur(10px);
+            box-shadow: 0 10px 20px rgba(0,0,0,0.2);
+            border: 1px solid rgba(255,255,255,0.1);
+            transition: all 0.4s ease;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .achievement::before {
+            content: "";
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 70%);
+            opacity: 0;
+            transition: opacity 0.5s ease;
+            transform: rotate(30deg);
+        }
+        
+        .achievement:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 15px 30px rgba(0,0,0,0.3);
+            border-color: rgba(255,255,255,0.3);
+        }
+        
+        .achievement:hover::before {
+            opacity: 1;
+        }
+        
+        .achievement h3 {
+            margin-bottom: 1rem;
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 1.6rem;
+            color: rgba(255,255,255,0.95);
+            font-weight: 600;
+            position: relative;
+            z-index: 1;
+        }
+        
+        .achievement p {
+            font-size: 1.1rem;
+            color: rgba(255,255,255,0.9);
+            line-height: 1.7;
+            position: relative;
+            z-index: 1;
+        }
+        
+        .heart-container {
+            margin-top: 3rem;
+            width: 120px;
+            height: 120px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            align-self: center;
+            position: relative;
+        }
+        
+        .heart {
+            width: 60px;
+            height: 60px;
+            background-color: rgba(255,120,150,0.8);
+            position: relative;
+            transform: rotate(45deg);
+            animation: heartbeat 1.5s infinite;
+            box-shadow: 0 0 30px rgba(255,120,150,0.6);
+        }
+        
+        .heart:before, .heart:after {
+            content: "";
+            width: 60px;
+            height: 60px;
+            background-color: rgba(255,120,150,0.8);
+            border-radius: 50%;
+            position: absolute;
+            box-shadow: 0 0 30px rgba(255,120,150,0.3);
+        }
+        
+        .heart:before {
+            top: -30px;
+            left: 0;
+        }
+        
+        .heart:after {
+            top: 0;
+            left: -30px;
+        }
+        
+        @keyframes heartbeat {
+            0% { transform: rotate(45deg) scale(1); }
+            25% { transform: rotate(45deg) scale(1.1); }
+            50% { transform: rotate(45deg) scale(1); }
+            75% { transform: rotate(45deg) scale(1.1); }
+            100% { transform: rotate(45deg) scale(1); }
+        }
+        
+        .signature {
+            font-family: 'Dancing Script', cursive;
+            font-size: 2.5rem;
+            color: white;
+            text-shadow: 1px 1px 5px rgba(0,0,0,0.5);
+            margin-top: 3rem;
+            position: relative;
+        }
+        
+        .signature::after {
+            content: "";
+            position: absolute;
+            bottom: -10px;
+            left: 0;
+            width: 100%;
+            height: 1px;
+            background: linear-gradient(to right, transparent, rgba(255,255,255,0.5), transparent);
+        }
+        
+        .flower {
+            position: absolute;
+            font-size: 2.5rem;
+            pointer-events: none;
+            animation: float 15s ease-in-out infinite;
+            filter: drop-shadow(0 0 10px rgba(255,255,255,0.5));
+            z-index: 2;
+        }
+        
+        .f1 { top: 10%; left: 5%; animation-delay: 0s; }
+        .f2 { top: 20%; right: 5%; animation-delay: 2s; }
+        .f3 { bottom: 20%; left: 5%; animation-delay: 4s; }
+        .f4 { bottom: 15%; right: 5%; animation-delay: 6s; }
+        .f5 { top: 40%; left: 15%; animation-delay: 8s; }
+        .f6 { bottom: 30%; right: 15%; animation-delay: 10s; }
+        .f7 { top: 50%; right: 25%; animation-delay: 12s; }
+        .f8 { bottom: 40%; left: 25%; animation-delay: 14s; }
+        
+        @keyframes float {
+            0% { transform: translate(0, 0) rotate(0deg); }
+            33% { transform: translate(20px, -20px) rotate(10deg); }
+            66% { transform: translate(-20px, 20px) rotate(-10deg); }
+            100% { transform: translate(0, 0) rotate(0deg); }
+        }
+        
+        .sparkle {
+            position: absolute;
+            width: 5px;
+            height: 5px;
+            border-radius: 50%;
+            background-color: white;
+            box-shadow: 0 0 15px 3px white;
+            animation: sparkle 4s linear infinite;
+            opacity: 0;
+            z-index: 1;
+        }
+        
+        @keyframes sparkle {
+            0% { opacity: 0; transform: scale(0); }
+            50% { opacity: 1; transform: scale(1); }
+            100% { opacity: 0; transform: scale(0); }
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .reveal-btn {
+            margin-top: 3rem;
+            margin-bottom: 2rem;
+            padding: 1.2rem 2.5rem;
+            background: linear-gradient(135deg, rgba(255,130,170,0.3) 0%, rgba(255,130,170,0.5) 100%);
+            border: 1px solid rgba(255,255,255,0.3);
+            color: white;
+            border-radius: 50px;
+            font-family: 'Montserrat', sans-serif;
+            font-size: 1.2rem;
+            font-weight: 600;
+            letter-spacing: 1px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            backdrop-filter: blur(5px);
+            box-shadow: 0 10px 20px rgba(0,0,0,0.2), 0 0 20px rgba(255,130,170,0.3);
+            animation: pulse 2s infinite;
+            z-index: 5;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .reveal-btn:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 30px rgba(0,0,0,0.3), 0 0 30px rgba(255,130,170,0.4);
+            background: linear-gradient(135deg, rgba(255,130,170,0.4) 0%, rgba(255,130,170,0.6) 100%);
+        }
+        
+        .reveal-btn::before {
+            content: "";
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(255,255,255,0.3) 0%, transparent 70%);
+            opacity: 0;
+            transition: opacity 0.5s ease;
+            transform: rotate(30deg);
+        }
+        
+        .reveal-btn:hover::before {
+            opacity: 1;
+        }
+        
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+        
+        .memory-bubbles {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 2.5rem;
+            margin: 3rem auto;
+            width: 100%;
+            max-width: 1200px;
+            position: relative;
+            z-index: 4;
+            padding: 0 2rem;
+        }
+        
+        .memory-bubble {
+            position: relative;
+            width: 280px;
+            height: 280px;
+            border-radius: 20px;
+            background: linear-gradient(135deg, rgba(255,255,255,0.2) 0%, rgba(255,255,255,0.05) 100%);
+            backdrop-filter: blur(10px);
+            box-shadow: 0 15px 30px rgba(0,0,0,0.2), inset 0 0 30px rgba(255,255,255,0.1);
+            border: 2px solid rgba(255,255,255,0.2);
+            overflow: hidden;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            transition: all 0.5s ease;
+            transform-style: preserve-3d;
+            perspective: 1000px;
+            transform: rotate(0deg) translateZ(0);
+            animation: floatBubble 10s infinite ease-in-out;
+            animation-delay: calc(var(--i) * 1s);
+            margin: 0 auto;
+            background-image: url('path/to/your/image.jpg');
+            background-size: cover;
+            background-position: center;
+        }
+        
+        @keyframes floatBubble {
+            0%, 100% { transform: translateY(0) rotate(0deg); }
+            50% { transform: translateY(-15px) rotate(2deg); }
+        }
+        
+        .memory-bubble:hover {
+            transform: scale(1.1) translateZ(30px);
+            box-shadow: 0 25px 50px rgba(0,0,0,0.3), inset 0 0 50px rgba(255,255,255,0.2);
+            border-color: rgba(255,255,255,0.4);
+            z-index: 10;
+        }
+        
+        .memory-icon {
+            font-size: 4.5rem;
+            color: rgba(255,255,255,0.9);
+            transition: all 0.5s ease;
+            text-shadow: 0 0 20px rgba(255,255,255,0.5);
+        }
+        
+        .memory-bubble:hover .memory-icon {
+            transform: scale(1.2);
+            color: white;
+            text-shadow: 0 0 30px rgba(255,255,255,0.8);
+        }
+        
+        .memory-bubble::after {
+            content: attr(data-title);
+            position: absolute;
+            bottom: 15%;
+            left: 0;
+            width: 100%;
+            text-align: center;
+            font-family: 'Montserrat', sans-serif;
+            font-size: 1.2rem;
+            font-weight: 500;
+            color: white;
+            opacity: 0;
+            transform: translateY(10px);
+            transition: all 0.3s ease;
+            padding: 0 1rem;
+        }
+        
+        .memory-bubble:hover::after {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        
+        .memory-bubble::before {
+            content: "";
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(255,255,255,0.2) 0%, transparent 70%);
+            opacity: 0;
+            transition: opacity 0.5s ease;
+            transform: rotate(30deg);
+        }
+        
+        .memory-bubble:hover::before {
+            opacity: 1;
+        }
+        
+        .glow-effect {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            border-radius: 20px;
+            box-shadow: inset 0 0 60px rgba(255,255,255,0.3);
+            opacity: 0;
+            transition: opacity 0.5s ease;
+        }
+        
+        .memory-bubble:hover .glow-effect {
+            opacity: 1;
+        }
+        
+        @media (max-width: 1200px) {
+            .memory-bubbles {
+                grid-template-columns: repeat(2, 1fr);
+                gap: 2rem;
+            }
+            
+            .memory-bubble {
+                width: 240px;
+                height: 240px;
+            }
+            
+            .memory-icon {
+                font-size: 3.5rem;
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .memory-bubbles {
+                grid-template-columns: 1fr;
+                gap: 1.5rem;
+            }
+            
+            .memory-bubble {
+                width: 280px;
+                height: 280px;
+            }
+            
+            .memory-icon {
+                font-size: 4rem;
+            }
+        }
+
+        /* New Simple Image Gallery Styles */
+        .image-gallery {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 2rem;
+            padding: 2rem;
+            width: 100%;
+            max-width: 1200px;
+            margin: 3rem auto;
+        }
+
+        .gallery-item {
+            position: relative;
+            width: 100%;
+            aspect-ratio: 1;
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.2);
+            transition: transform 0.3s ease;
+        }
+
+        .gallery-item:hover {
+            transform: scale(1.05);
+        }
+
+        .gallery-item img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.3s ease;
+        }
+
+        .gallery-item:hover img {
+            transform: scale(1.1);
+        }
+
+        .gallery-caption {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            padding: 1rem;
+            background: linear-gradient(to top, rgba(0,0,0,0.8), transparent);
+            color: white;
+            font-family: 'Montserrat', sans-serif;
+            font-size: 1.1rem;
+            opacity: 0;
+            transform: translateY(10px);
+            transition: all 0.3s ease;
+        }
+
+        .gallery-item:hover .gallery-caption {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        @media (max-width: 1200px) {
+            .image-gallery {
+                grid-template-columns: repeat(2, 1fr);
+                gap: 1.5rem;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .image-gallery {
+                grid-template-columns: 1fr;
+                gap: 1rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div id="canvas-container"></div>
+    
+    <div class="container">
+        <div class="flower f1">🌸</div>
+        <div class="flower f2">💮</div>
+        <div class="flower f3">🌺</div>
+        <div class="flower f4">🌷</div>
+        <div class="flower f5">🌹</div>
+        <div class="flower f6">💐</div>
+        <div class="flower f7">🪷</div>
+        <div class="flower f8">🌻</div>
+        
+        <div class="main-content">
+            <div class="main-header">
+                <div class="date">MAY 11, 2025</div>
+                <h1>Happy Mother's Day Maa</h1>
+                <h2>To the woman who made everything possible</h2>
+            </div>
+            
+            <div class="image-gallery">
+                <div class="gallery-item">
+                    <img src="img_celebration.jpg" alt="Family Moments">
+                    <div class="gallery-caption"></div>
+                </div>
+                <div class="gallery-item">
+                    <img src="img_leaving_me.jpg" alt="Special Moments">
+                    <div class="gallery-caption"></div>
+                </div>
+                <div class="gallery-item">
+                    <img src="img_mela.jpg" alt="Family Time">
+                    <div class="gallery-caption"></div>
+                </div>
+                <div class="gallery-item">
+                    <img src="img_old_pic.jpg" alt="Celebrations">
+                    <div class="gallery-caption"></div>
+                </div>
+                <div class="gallery-item">
+                    <img src="img_with_sonam.jpg" alt="Mom's Love">
+                    <div class="gallery-caption"></div>
+                </div>
+                <div class="gallery-item">
+                    <img src="img_durga_puja.jpg" alt="Special Moments">
+                    <div class="gallery-caption"></div>
+                </div>
+            </div>
+            
+            <button class="reveal-btn" id="reveal-btn">Open Your Special Message ✨</button>
+            
+            <div class="message-section" id="message-section" style="display: none;">
+                <div class="left-col">
+                    <div class="message">
+                        <h3 class="section-title">Dear Mummy</h3>
+                        <p>Happy Mother’s Day! Today, we just want to take a moment to thank you for everything you do for us. Your love, support, and sacrifices mean the world to us.</p>
+                        <p>From guiding us through life’s ups and downs to being our biggest cheerleader, you have always been there. Your midnight talks helped us clear our doubts, your hugs made everything feel better, and your wisdom gave us the strength to move forward.</p>
+                        <p>You’ve taught us the values that no school ever could—how to be kind, strong, and never give up. More than just a mother, you are our teacher, our best friend, and our safe place.</p>
+                        <p>Whatever we achieve in life, it’s all because of you. We are so grateful to have you and love you beyond words.</p>
+                        
+                        <div class="signature">With all our love,<br>Ishu and Sonam</div>
+                    </div>
+                </div>
+                
+                <div class="right-col">
+                    <h3 class="section-title">Your Legacy of Love</h3>
+                    <div class="achievements">
+                        <div class="achievement">
+                            <h3></h3>
+                            <p>Mummy thank you for everything , aapke bina sab suna lagta hai. Aap hi humari taqat, humara sukh, aur sabse bada sahaara ho. Hamesha humare saath rehna! ❤️</p>
+                            <p>Ishu</p>
+                        </div>
+                        
+                        <div class="achievement">
+                            <h3>Mummy,</h3>
+                            <p>Your kindness and strength have always guided me. When times were tough, your unwavering support kept me going. You taught me what it truly means to care for others—not just through words, but through your actions every single day.</p>
+                            <p>The way you selflessly help people and bring warmth into every situation has been my biggest inspiration. I try to carry that same love and compassion in everything I do, and it’s all because of you.</p>
+                            <p>Thank you for always being my strength and my biggest guide.</p>
+                            <p>Sonam</p>
+                        </div>
+                        
+                        <div class="achievement">
+                            <h3>THANK YOU MUMMY ❤️ </h3>
+                            <p></p>
+                        </div>
+                    </div>
+                    
+                    <div class="heart-container">
+                        <div class="heart"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Initialize Three.js background
+        const canvasContainer = document.getElementById('canvas-container');
+        const width = canvasContainer.clientWidth;
+        const height = canvasContainer.clientHeight;
+        
+        const scene = new THREE.Scene();
+        const camera = new THREE.PerspectiveCamera(75, width / height, 0.1, 1000);
+        camera.position.z = 50;
+        
+        const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
+        renderer.setSize(width, height);
+        renderer.setClearColor(0x000000, 0);
+        canvasContainer.appendChild(renderer.domElement);
+        
+        // Create particles
+        const particlesGeometry = new THREE.BufferGeometry();
+        const particlesCount = 3000;
+        
+        const posArray = new Float32Array(particlesCount * 3);
+        const colorsArray = new Float32Array(particlesCount * 3);
+        
+        // Enhanced color palette for particles
+        const colors = [
+            new THREE.Color(0xff9a9e), // Pink
+            new THREE.Color(0xfad0c4), // Light Pink
+            new THREE.Color(0xfbc2eb), // Purple Pink
+            new THREE.Color(0xa18cd1), // Light Purple
+            new THREE.Color(0xffecd2),  // Light Yellow
+            new THREE.Color(0xff7eb3), // Bright Pink
+            new THREE.Color(0xffc3a0), // Peach
+            new THREE.Color(0xff85a2) // Rose
+        ];
+        
+        for (let i = 0; i < particlesCount * 3; i += 3) {
+            // Position in a sphere with more variance
+            const radius = 30 + Math.random() * 50;
+            const theta = Math.random() * Math.PI * 2;
+            const phi = Math.random() * Math.PI;
+            
+            posArray[i] = radius * Math.sin(phi) * Math.cos(theta);
+            posArray[i + 1] = radius * Math.sin(phi) * Math.sin(theta);
+            posArray[i + 2] = radius * Math.cos(phi);
+            
+            // Random color from palette
+            const color = colors[Math.floor(Math.random() * colors.length)];
+            colorsArray[i] = color.r;
+            colorsArray[i + 1] = color.g;
+            colorsArray[i + 2] = color.b;
+        }
+        
+        particlesGeometry.setAttribute('position', new THREE.BufferAttribute(posArray, 3));
+        particlesGeometry.setAttribute('color', new THREE.BufferAttribute(colorsArray, 3));
+        
+        const particlesMaterial = new THREE.PointsMaterial({
+            size: 0.3,
+            vertexColors: true,
+            transparent: true,
+            opacity: 0.8,
+            sizeAttenuation: true
+        });
+        
+        const particlesMesh = new THREE.Points(particlesGeometry, particlesMaterial);
+        scene.add(particlesMesh);
+        
+        // Create glowing orbs
+        const orbs = [];
+        const orbCount = 8;
+        
+        for (let i = 0; i < orbCount; i++) {
+            const geometry = new THREE.SphereGeometry(2 + Math.random() * 3, 32, 32);
+            
+            // Get a random color from the palette
+            const color = colors[Math.floor(Math.random() * colors.length)];
+            
+            const material = new THREE.MeshBasicMaterial({
+                color: color,
+                transparent: true,
+                opacity: 0.3
+            });
+            
+            const orb = new THREE.Mesh(geometry, material);
+            
+            // Position randomly
+            const distance = 30 + Math.random() * 30;
+            const angle = Math.random() * Math.PI * 2;
+            const height = -20 + Math.random() * 40;
+            
+            orb.position.x = Math.cos(angle) * distance;
+            orb.position.y = height;
+            orb.position.z = Math.sin(angle) * distance;
+            
+            // Store initial position and movement parameters
+            orb.userData = {
+                initialX: orb.position.x,
+                initialY: orb.position.y,
+                initialZ: orb.position.z,
+                speedFactor: 0.5 + Math.random() * 1.5,
+                pulseSpeed: 0.5 + Math.random() * 1.5
+            };
+            
+            scene.add(orb);
+            orbs.push(orb);
+        }
+        
+        // Animation loop
+        const clock = new THREE.Clock();
+        
+        function animate() {
+            const elapsedTime = clock.getElapsedTime();
+            
+            // Rotate particle system
+            particlesMesh.rotation.x = elapsedTime * 0.05;
+            particlesMesh.rotation.y = elapsedTime * 0.03;
+            
+            // Animate orbs
+            orbs.forEach((orb, index) => {
+                const { initialX, initialY, initialZ, speedFactor, pulseSpeed } = orb.userData;
+                
+                // Move in a circular pattern
+                orb.position.x = initialX + Math.cos(elapsedTime * 0.2 * speedFactor) * 10;
+                orb.position.z = initialZ + Math.sin(elapsedTime * 0.2 * speedFactor) * 10;
+                orb.position.y = initialY + Math.sin(elapsedTime * 0.3 * speedFactor) * 5;
+                
+                // Pulse size
+                const scale = 1 + Math.sin(elapsedTime * pulseSpeed) * 0.2;
+                orb.scale.set(scale, scale, scale);
+                
+                // Pulse opacity
+                orb.material.opacity = 0.2 + Math.sin(elapsedTime * pulseSpeed) * 0.1;
+            });
+            
+            renderer.render(scene, camera);
+            requestAnimationFrame(animate);
+        }
+        
+        animate();
+        
+        // Handle window resize
+        window.addEventListener('resize', () => {
+            const newWidth = canvasContainer.clientWidth;
+            const newHeight = canvasContainer.clientHeight;
+            
+            camera.aspect = newWidth / newHeight;
+            camera.updateProjectionMatrix();
+            
+            renderer.setSize(newWidth, newHeight);
+        });
+        
+        // Create sparkles periodically
+        function createSparkle() {
+            const sparkle = document.createElement('div');
+            sparkle.classList.add('sparkle');
+            
+            // Position randomly
+            const x = Math.random() * window.innerWidth;
+            const y = Math.random() * window.innerHeight;
+            
+            sparkle.style.left = `${x}px`;
+            sparkle.style.top = `${y}px`;
+            
+            // Random delay and duration
+            const delay = Math.random() * 2;
+            const duration = 2 + Math.random() * 2;
+            
+            sparkle.style.animationDelay = `${delay}s`;
+            sparkle.style.animationDuration = `${duration}s`;
+            
+            document.body.appendChild(sparkle);
+            
+            // Remove after animation
+            setTimeout(() => {
+                sparkle.remove();
+            }, (delay + duration) * 1000);
+        }
+        
+        // Create sparkles at intervals
+        setInterval(createSparkle, 300);
+        
+        // Reveal message section on button click
+        document.getElementById('reveal-btn').addEventListener('click', function() {
+            const messageSection = document.getElementById('message-section');
+            
+            if (messageSection.style.display === 'none') {
+                // Show message with animation
+                messageSection.style.display = 'grid';
+                messageSection.style.opacity = '0';
+                
+                // Animate in
+                gsap.to(messageSection, {
+                    opacity: 1,
+                    duration: 1.5,
+                    ease: "power2.out",
+                    onComplete: () => {
+                        // Change button text
+                        this.textContent = 'Hide Message ✨';
+                        
+                        // Animate in achievement cards
+                        gsap.fromTo('.achievement', 
+                            { y: 50, opacity: 0 },
+                            { 
+                                y: 0, 
+                                opacity: 1, 
+                                duration: 0.8, 
+                                stagger: 0.2,
+                                ease: "back.out(1.7)"
+                            }
+                        );
+                    }
+                });
+            } else {
+                // Hide message with animation
+                gsap.to(messageSection, {
+                    opacity: 0,
+                    duration: 1,
+                    ease: "power2.in",
+                    onComplete: () => {
+                        messageSection.style.display = 'none';
+                        this.textContent = 'Open Your Special Message ✨';
+                    }
+                });
+            }
+        });
+        
+        // Add parallax effect to flowers
+        document.addEventListener('mousemove', (e) => {
+            const flowers = document.querySelectorAll('.flower');
+            const x = e.clientX / window.innerWidth;
+            const y = e.clientY / window.innerHeight;
+            
+            flowers.forEach((flower, index) => {
+                const speed = 1 + (index % 3) * 0.5;
+                const xOffset = (x - 0.5) * 20 * speed;
+                const yOffset = (y - 0.5) * 20 * speed;
+                
+                gsap.to(flower, {
+                    x: xOffset,
+                    y: yOffset,
+                    duration: 1,
+                    ease: "power1.out"
+                });
+            });
+        });
+        
+        // Initialize parallax effect on memory bubbles
+        const memoryBubbles = document.querySelectorAll('.memory-bubble');
+        
+        memoryBubbles.forEach((bubble, index) => {
+            // Add click event to memory bubbles
+            bubble.addEventListener('click', () => {
+                // Add a sparkle effect
+                for (let i = 0; i < 10; i++) {
+                    createSparkle();
+                }
+                
+                // Animate the bubble
+                gsap.to(bubble, {
+                    scale: 1.2,
+                    duration: 0.3,
+                    ease: "back.out(1.7)",
+                    onComplete: () => {
+                        gsap.to(bubble, {
+                            scale: 1,
+                            duration: 0.3,
+                            ease: "power2.out"
+                        });
+                    }
+                });
+            });
+        });
+        
+        // Add parallax effect to memory bubbles
+        document.addEventListener('mousemove', (e) => {
+            const x = e.clientX / window.innerWidth;
+            const y = e.clientY / window.innerHeight;
+            
+            memoryBubbles.forEach((bubble, index) => {
+                const speed = 1 + (index % 3) * 0.5;
+                const xOffset = (x - 0.5) * 10 * speed;
+                const yOffset = (y - 0.5) * 10 * speed;
+                
+                gsap.to(bubble, {
+                    x: xOffset,
+                    y: yOffset,
+                    rotation: xOffset * 0.1,
+                    duration: 1,
+                    ease: "power1.out"
+                });
+            });
+        });
+        
+        // Initialize with some sparkles
+        for (let i = 0; i < 20; i++) {
+            setTimeout(createSparkle, i * 100);
+        }
+    </script>
+</body>
+</html>
